@@ -1,3 +1,7 @@
+// Setup DB
+const JSONdb = require('simple-json-db');
+const db = new JSONdb('/db/db.json');
+
 // Setup Express
 const express = require('express')
 const exphbs = require('express-handlebars')
@@ -8,6 +12,8 @@ const port = 3000
 
 app.engine('handlebars', exphbs())
 app.set('view engine', 'handlebars');
+app.use(express.static('public'))
+
 
 app.get('/', (req, res) => {
     res.render('home');
