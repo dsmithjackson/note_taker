@@ -1,5 +1,4 @@
 <div id='container'>
-    
     <div id='header'>
         <h1 id='title'>Note Taker</h1>
         <div id='actions'>
@@ -13,7 +12,7 @@
     </div>
     <div id='content-body'>
         <ul id='left-panel'>
-        </ul>       
+        </ul>
         <div id='right-panel'>
             <div id='edit'>
                 <input id='title-input' onchange='checkSave()' placeholder="Note Title"></input>
@@ -23,7 +22,7 @@
                 <h1 id='note-title'>Title</h1>
                 <p id='note-body'>Body</p>
             </div>
-        
+
         </div>
     </div>
 </div>
@@ -37,7 +36,7 @@
 
 
     function changeState(state) {
-        if(state == STATE.VIEW) {
+        if (state == STATE.VIEW) {
             document.getElementById('edit').style.display = 'none';
             document.getElementById('view').style.display = 'block';
         } else {
@@ -56,7 +55,7 @@
         document.getElementById('note-body').innerText = entry.body;
     }
 
-    function makeNewNote(){
+    function makeNewNote() {
         changeState(STATE.EDIT);
     }
 
@@ -67,7 +66,7 @@
         if (title && body) {
             // Saveable
             document.getElementById('save-button').style.display = 'inline-block';
-            
+
         } else {
             // Not Saveable
             document.getElementById('save-button').style.display = 'none';
@@ -84,7 +83,7 @@
             });
     }
 
-    
+
     function saveNote() {
         const title = document.getElementById('title-input').value;
         const body = document.getElementById('body-input').value;
@@ -107,26 +106,25 @@
 
 
     fetch('/api/notes')
-    .then(response => response.json())
-    .then((data) => {
-        const append = [];
-        currentDB = data;
-        Object.keys(data).forEach((key) => {
-            const noteBody = JSON.parse(data[key]);
-            console.log(key, noteBody);
-            append.push(`<li id='${key}'>${noteBody.title}<button onclick='deleteNote("${key}")'>&#128465;</button></li>`);
-        });
-        document.getElementById('left-panel').innerHTML = append.join('');
-        document.getElementById('left-panel').addEventListener('click', (event) => {
-            // Only open the note if you didn't click the delete button
-            if (event.target.type !== 'submit') {
-                // Only open the note if the target is the li element
-                if (event.target.tagName === "LI") {
-                    openNote(event.target.id)
+        .then(response => response.json())
+        .then((data) => {
+            const append = [];
+            currentDB = data;
+            Object.keys(data).forEach((key) => {
+                const noteBody = JSON.parse(data[key]);
+                console.log(key, noteBody);
+                append.push(`<li id='${key}'>${noteBody.title}<button onclick='deleteNote("${key}")'>&#128465;</button></li>`);
+            });
+            document.getElementById('left-panel').innerHTML = append.join('');
+            document.getElementById('left-panel').addEventListener('click', (event) => {
+                // Only open the note if you didn't click the delete button
+                if (event.target.type !== 'submit') {
+                    // Only open the note if the target is the li element
+                    if (event.target.tagName === "LI") {
+                        openNote(event.target.id)
+                    }
                 }
-            }
+            });
         });
-    });
-        
 
 </script>
