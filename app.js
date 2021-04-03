@@ -78,6 +78,6 @@ app.delete('/api/notes/:id', (req, res) => {
 });
 
 
-app.listen(port, () => {
+app.listen(process.env.PORT || port, () => {
     console.log(`app running on ${port}`)
 })
