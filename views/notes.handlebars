@@ -120,7 +120,10 @@
         document.getElementById('left-panel').addEventListener('click', (event) => {
             // Only open the note if you didn't click the delete button
             if (event.target.type !== 'submit') {
-                openNote(event.target.id)
+                // Only open the note if the target is the li element
+                if (event.target.tagName === "LI") {
+                    openNote(event.target.id)
+                }
             }
         });
     });
