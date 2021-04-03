@@ -1,31 +1,129 @@
-
 <div id='container'>
-
+    
     <div id='header'>
         <h1 id='title'>Note Taker</h1>
         <div id='actions'>
-            <button>
-                SAVE
+            <button id='save-button' onclick='saveNote()'>
+                &#128190;
             </button>
-            <button>
-                EDIT
+            <button onclick='makeNewNote()'>
+                &#9998;
             </button>
         </div>
     </div>
     <div id='content-body'>
         <ul id='left-panel'>
-            <li>Note <button>Delete</button></li>
         </ul>       
         <div id='right-panel'>
             <div id='edit'>
-                <input placeholder="Note Title"></input>
-                <textarea placeholder="Note Text"></textarea>
+                <input id='title-input' onchange='checkSave()' placeholder="Note Title"></input>
+                <textarea id='body-input' onchange='checkSave()' placeholder="Note Text"></textarea>
             </div>
             <div id='view'>
-                <h1>Title</h1>
-                <p>Body</p>
+                <h1 id='note-title'>Title</h1>
+                <p id='note-body'>Body</p>
             </div>
         
         </div>
     </div>
 </div>
+
+<script  type='text/javascript'>
+    const STATE = {
+        VIEW: 0,
+        EDIT: 1,
+    }
+    let currentDB = {};
+
+
+    function changeState(state) {
+        if(state == STATE.VIEW) {
+            document.getElementById('edit').style.display = 'none';
+            document.getElementById('view').style.display = 'block';
+        } else {
+            document.getElementById('view').style.display = 'none';
+            document.getElementById('edit').style.display = 'block';
+        }
+    }
+
+    changeState(STATE.EDIT);
+
+
+    function openNote(id) {
+        changeState(STATE.VIEW);
+        const entry = JSON.parse(currentDB[id]);
+        document.getElementById('note-title').innerText = entry.title;
+        document.getElementById('note-body').innerText = entry.body;
+    }
+
+    function makeNewNote(){
+        changeState(STATE.EDIT);
+    }
+
+    function checkSave() {
+        const title = document.getElementById('title-input').value;
+        const body = document.getElementById('body-input').value;
+
+        if (title && body) {
+            // Saveable
+            document.getElementById('save-button').style.display = 'inline-block';
+            
+        } else {
+            // Not Saveable
+            document.getElementById('save-button').style.display = 'none';
+        }
+    }
+
+    function deleteNote(id) {
+        fetch(`/api/notes/${id}`, {
+                method: 'DELETE'
+            })
+            .then(response => console.log(response))
+            .then((data) => {
+                window.location.reload();
+            });
+    }
+
+    
+    function saveNote() {
+        const title = document.getElementById('title-input').value;
+        const body = document.getElementById('body-input').value;
+
+        fetch('/api/notes', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'title': title,
+                    'body': body
+                })
+            })
+            .then((response) => {
+                console.log(response)
+                window.location.reload();
+            });
+    }
+
+
+    fetch('/api/notes')
+    .then(response => response.json())
+    .then((data) => {
+        const append = [];
+        currentDB = data;
+        Object.keys(data).forEach((key) => {
+            const noteBody = JSON.parse(data[key]);
+            console.log(key, noteBody);
+            append.push(`<li id='${key}'>${noteBody.title}<button onclick='deleteNote("${key}")'>&#128465;</button></li>`);
+        });
+        document.getElementById('left-panel').innerHTML = append.join('');
+        document.getElementById('left-panel').addEventListener('click', (event) => {
+            // Only open the note if you didn't click the delete button
+            if (event.target.type !== 'submit') {
+                openNote(event.target.id)
+            }
+        });
+    });
+        
+
+</script>

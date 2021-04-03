@@ -54,7 +54,7 @@ app.post('/api/notes', (req, res) => {
     const uuid = uuidv4();
     console.log(req.body)
     const title = req.body.title;
-    const body = req.body.note;
+    const body = req.body.body;
 
     const note = {
         title: title,
