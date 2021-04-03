@@ -12,6 +12,21 @@ app.set('view engine', 'handlebars');
 app.get('/', (req, res) => {
     res.render('home');
 });
+app.get('/notes', (req, res) => {
+    res.render('notes');
+})
+
+app.get('/api/notes', (req,res) => {
+
+});
+
+app.post('/api/notes', (req, res) => {
+
+});
+
+app.delete('/api/notes/:id', (req, res) => {
+
+});
 
 
 app.listen(port, () => {
